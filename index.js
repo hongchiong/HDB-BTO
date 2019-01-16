@@ -28,7 +28,6 @@ app.engine('jsx', reactEngine);
  * Routes
  * ===================================
  */
-require('./routes')(app, db);
 //==============================================================
 
 const seedDatabase = (allUnits) => {
@@ -73,14 +72,30 @@ const seedDatabase = (allUnits) => {
     };
 };
 
-const starter = scraper.scrape.then(allUnits => {
+//To Check How Much Time Passed Since Last Update
+let query = "SELECT data_on FROM units ORDER BY id DESC";
+let latestUpdate;
+db.pool.query(query, (err, result) => {
+    if (err) {
+        console.error('query error:', err.stack);
+    } else {
+        //if 1 hr has passed since latest update
+        let now = new Date();
+        if ((now.getTime() - result.rows[0].data_on.getTime()) > 3600000) {
+            const starter = scraper.scrape.then(allUnits => {
 
-    console.log(allUnits)
-    console.log(allUnits.length);
-    seedDatabase(allUnits);
+                console.log(allUnits)
+                console.log(allUnits.length);
+                seedDatabase(allUnits);
+                require('./routes')(app, db);
 
-
+            });
+        } else {
+            require('./routes')(app, db);
+        }
+    };
 });
+
 
 
 //==============================================================

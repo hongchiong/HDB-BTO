@@ -1,5 +1,5 @@
 const pg = require('pg');
-// const tweets = require('./models/tweets');
+const bto = require('./models/bto');
 
 const configs = {
   user: 'postgres',
@@ -14,6 +14,11 @@ pool.on('error', function (err) {
 });
 
 module.exports = {
+    queryInterface: (text, params, callback) => {
+       return pool.query(text, params, callback);
+    },
+
+    bto: bto(pool),
 
     pool: pool
 };
