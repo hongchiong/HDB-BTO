@@ -9,6 +9,8 @@ module.exports = (dbPoolInstance) => {
                 console.error('query error:', err.stack);
                 callback(err, null);
             } else {
+                console.log("THIS IS QUERY RESULT");
+                console.log(result);
                 callback(err, result.rows);
             };
         });

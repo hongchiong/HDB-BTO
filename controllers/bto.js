@@ -7,7 +7,7 @@ module.exports = (db) => {
 
   const index = (req, res) => {
       db.bto.getAll((err, result) => {
-        res.send(result);
+        res.render('home', [result]);
       });
   };
 

@@ -39,8 +39,11 @@ const seedDatabase = (allUnits) => {
         };
     };
     console.log(allBlks);
+
+    //Need to make a check for whether Blks seeded already
+
     for (let i = 0; i < allBlks.length; i++) {
-        let blkQuery = `INSERT INTO blks (name) VALUES ('${allBlks[i]}') RETURNING id, name;`;
+        let blkQuery = `INSERT INTO blks (blk_num) VALUES ('${allBlks[i]}') RETURNING id, blk_num;`;
         db.pool.query(blkQuery, (err, result) => {
             if (err) {
                 console.error('query error:', err.stack);
@@ -48,16 +51,16 @@ const seedDatabase = (allUnits) => {
                 //Seed Units
                 console.log(result.rows[0]);
                 for (let j = 0; j < allUnits.length; j++) {
-                    if (allUnits[j].blkName == result.rows[0].name) {
+                    if (allUnits[j].blkName == result.rows[0].blk_num) {
                         if (allUnits[j].unitColor == '#cc0000') {
-                            let unitQuery = `INSERT INTO units (name, blk_id, selected) VALUES ('${allUnits[j].unitNumber}', '${result.rows[0].id}', '${true}');`;
+                            let unitQuery = `INSERT INTO units (unit_num, blk_id, selected) VALUES ('${allUnits[j].unitNumber}', '${result.rows[0].id}', '${true}');`;
                             db.pool.query(unitQuery, (err, result) => {
                                 if (err) {
                                     console.error('query error', err.stack);
                                 }
                             });
                         } else {
-                            let unitQuery = `INSERT INTO units (name, blk_id, selected) VALUES ('${allUnits[j].unitNumber}', '${result.rows[0].id}', '${false}');`;
+                            let unitQuery = `INSERT INTO units (unit_num, blk_id, selected) VALUES ('${allUnits[j].unitNumber}', '${result.rows[0].id}', '${false}');`;
                             db.pool.query(unitQuery, (err, result) => {
                                 if (err) {
                                     console.error('query error', err.stack);
@@ -81,7 +84,7 @@ db.pool.query(query, (err, result) => {
     } else {
         //if 1 hr has passed since latest update
         let now = new Date();
-        if ((now.getTime() - result.rows[0].data_on.getTime()) > 3600000) {
+        if (result.rows[0] == undefined || (now.getTime() - result.rows[0].data_on.getTime()) > 3600000) {
             const starter = scraper.scrape.then(allUnits => {
 
                 console.log(allUnits)
