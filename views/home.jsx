@@ -3,38 +3,81 @@ var DefaultLayout = require('./layouts/default');
 
 class Home extends React.Component {
   render() {
+    // const headerRow = blksArr.map(blk => {
+    //     return (
+    //         <div class="row header-row">
+    //             <div class="col-sm-1 lvl-column">
+    //                 Level
+    //             </div>
+    //             <div class="col-sm blk-colmuns">
+    //                 <div class="row blk-row">
+    //                     <div class="col-sm blk-header">
+    //                         431C
+    //                     </div>
+    //                 </div>
+    //                 <div class="row unit-row">
+    //                     <div class="col-sm unit-header">
+    //                         unit 1
+    //                     </div>
+    //                     <div class="col-sm unit-header">
+    //                         unit 2
+    //                     </div>
+    //                     <div class="col-sm unit-header">
+    //                         unit 3
+    //                     </div>
+    //                 </div>
+    //             </div>
+    //         </div>
+    //     );
+    // });
 
-    //Dynamic Generate Table To Display Result
-    //Need To Count Blks and Generate Blks Column Header
-    //Count Units and Generate Units Column Header
-    //Count Levels And Generate Level Rows
-    //
+    //FUNCTION TO REMOVE DUPLICATES FROM ARRAY
+    const rmDups = (arr) => arr.filter((v,i) => arr.indexOf(v) === i);
 
-    const units = this.props[0].map((unit, i) => {
+    const blkHeaders = this.props.homes.map((blk)=>{
+        let blocknum = Object.keys(blk)[0]
+        let unitsArr = [];
         return (
-            <a href={`localhost:3000/${unit.id}`} class="list-group-item list-group-item-action flex-column align-items-start">
-                <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">{i + 1}</h5>
+            <div class="col-sm blk-colmuns">
+                <div class="row blk-row">
+                    <div class="row blk-row">
+                        <div class="col-sm blk-header">
+                            {blocknum}
+                        </div>
+                    </div>
+                    <div class="row unit-row">
+                        {
+                            blk[blocknum].map(unit => {
+                            unitsArr.push(unit.unit_num.substr(4));
+                            unitsArr = rmDups(unitsArr).sort();
+                            console.log(unitsArr);
+                            return unitsArr.map(unitNum => {
+                                return (
+                                    <div class="col-sm unit-header">
+                                        {unitNum}
+                                    </div>
+                                )
+                            })
+                        })}
+                    </div>
                 </div>
-                <div class="d-flex w-100 p-3 justify-content-center">
-                    <h4 class="mb-1">{unit.unit_num}</h4>
-                </div>
-                <div class="d-flex w-100 justify-content-between">
-                    <small>Selected: <b>{unit.selected ? 'Yes' : 'No'}</b></small>
-                    <small>Blk: <b>{unit.blk_num}</b></small>
-                </div>
-            </a>
-        );
-    });
+            </div>
+            )
+    })
 
     return (
         <DefaultLayout>
-            <div class="jumbotron">
-                <h1 class="display-4">BTO</h1>
+            <div class="container-fluid">
+                <div class="row header-row" >
+                    <div class="col-sm-1 lvl-column">
+                        Level
+                    </div>
+                    {blkHeaders}
+                </div>
             </div>
-            <div class="list-group">
-                {units}
-            </div>
+
+
+
         </DefaultLayout>
     );
   }

@@ -23,12 +23,6 @@ const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
-/**
- * ===================================
- * Routes
- * ===================================
- */
-//==============================================================
 
 const startScrape = () => {
     scraper.scrape(true).then(allUnits => {
@@ -40,42 +34,66 @@ const startScrape = () => {
 };
 
 const seedDatabase = (allUnits) => {
-    let allBlks = allUnits[allUnits.length - 1];
+    const startQueries = (seeded, allUnits, allBlks) => {
+        const queryBlock = (blkQuery, allUnits, allBlks) => {
+            for (let j = 0; j < allBlks.length; j++) {
+                blkValue = [allBlks[j]];
+                db.pool.query(blkQuery, blkValue, (err, result) => {
+                    if (err) {
+                        console.error('query error:', err.stack);
+                    } else {
+                        //Seed Units
+                        console.log(result.rows[0]);
+                        for (let k = 0; k < allUnits.length - 1; k++) {
+                            if (allUnits[k].blkName == result.rows[0].blk_num) {
+                                if (allUnits[k].unitColor == '#cc0000') {
+                                    let unitQuery = `INSERT INTO units (unit_num, blk_id, selected) VALUES ('${allUnits[k].unitNumber}', '${result.rows[0].id}', '${true}');`;
+                                    db.pool.query(unitQuery, (err, result) => {
+                                        if (err) {
+                                            console.error('query error', err.stack);
+                                        }
+                                    });
+                                } else {
+                                    let unitQuery = `INSERT INTO units (unit_num, blk_id, selected) VALUES ('${allUnits[k].unitNumber}', '${result.rows[0].id}', '${false}');`;
+                                    db.pool.query(unitQuery, (err, result) => {
+                                        if (err) {
+                                            console.error('query error', err.stack);
+                                        }
+                                    });
+                                }
+                            };
+                        };
+                    }
+                });
+            };
+        };
 
+        //check which query to use
+        if (seeded) {
+            let blkQuery = `SELECT blks.id, blks.blk_num FROM blks;`;
+            queryBlock(blkQuery, allUnits, allBlks);
+        } else {
+            let blkQuery = `INSERT INTO blks (blk_num) VALUES ($1) RETURNING id, blk_num;`;
+            queryBlock(blkQuery, allUnits, allBlks);
+        }
+    };
+
+    const allBlks = allUnits[allUnits.length - 1];
     //Need to make a check for whether Blks seeded already
-
+    let seeded = false;
     for (let i = 0; i < allBlks.length; i++) {
-        let blkQuery = `INSERT INTO blks (blk_num) VALUES ('${allBlks[i]}') RETURNING id, blk_num;`;
+        let blkQuery = `SELECT blk_num FROM blks;`
         db.pool.query(blkQuery, (err, result) => {
-            if (err) {
-                console.error('query error:', err.stack);
-            } else {
-                //Seed Units
-                console.log(result.rows[0]);
-                for (let j = 0; j < allUnits.length - 1; j++) {
-                    if (allUnits[j].blkName == result.rows[0].blk_num) {
-                        if (allUnits[j].unitColor == '#cc0000') {
-                            let unitQuery = `INSERT INTO units (unit_num, blk_id, selected) VALUES ('${allUnits[j].unitNumber}', '${result.rows[0].id}', '${true}');`;
-                            db.pool.query(unitQuery, (err, result) => {
-                                if (err) {
-                                    console.error('query error', err.stack);
-                                }
-                            });
-                        } else {
-                            let unitQuery = `INSERT INTO units (unit_num, blk_id, selected) VALUES ('${allUnits[j].unitNumber}', '${result.rows[0].id}', '${false}');`;
-                            db.pool.query(unitQuery, (err, result) => {
-                                if (err) {
-                                    console.error('query error', err.stack);
-                                }
-                            });
-                        }
-                    };
-
-                };
-            }
+            if (result.rows[0] == undefined) {
+                seeded = false;
+            } else if (allBlks[i] == result.rows[0].blk_num) {
+                seeded = true;
+            };
         });
     };
+    startQueries(seeded, allUnits, allBlks);
 };
+
 
 //To Check How Much Time Passed Since Last Update
 let query = "SELECT data_on FROM units ORDER BY id DESC";
@@ -84,17 +102,19 @@ db.pool.query(query, (err, result) => {
     if (err) {
         console.error('query error:', err.stack);
     } else {
-        //if 1 hr has passed since latest update
+        //if 3 hrs has passed since latest update
         let now = new Date();
-        if (result.rows[0] == undefined || (now.getTime() - result.rows[0].data_on.getTime()) > 3600000) {
+        if (result.rows[0] == undefined || (now.getTime() - result.rows[0].data_on.getTime()) > 10800000) {
+            //Scrape and then scrape every hr
             startScrape();
+            setInterval(startScrape, 3600000);
         } else {
             require('./routes')(app, db);
+            //Scrape every hr
+            setInterval(startScrape, 3600000);
         }
     };
 });
-
-
 //==============================================================
 /**
  * ===================================

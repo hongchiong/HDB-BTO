@@ -11,8 +11,8 @@ class DefaultLayout extends React.Component {
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous"/>
         </head>
         <body>
-            <div class="container">
-                <nav class="navbar sticky-top navbar-light bg-light">
+            <div class="container-fluid">
+                <nav class="navbar sticky-top navbar-dark bg-dark">
                     <a class="navbar-brand" href="localhost:3000"><h1>BTO</h1></a>
                 </nav>
 
