@@ -1,7 +1,8 @@
 const puppeteer = require('puppeteer');
 
 // //Web Scraper
-async function puppet() {
+const puppet = async (start) => {
+    if (start) {
         const browser = await puppeteer.launch({headless: true});
         //GO TO URL
         let page = await browser.newPage();
@@ -12,6 +13,7 @@ async function puppet() {
 
         //Empty Array to store eventual data
         let allUnits = [];
+        let allBlks = [];
         //Repeat for number of Blks. 11 times
         for (let i = 0; i < blks.length; i++) {
             //Open new tab for every Blk
@@ -23,6 +25,7 @@ async function puppet() {
             let blkBtn = blks[i];
             let btn = await blkBtn.$('a');
             let blkName = await page.evaluate(btn => btn.innerText, btn);
+            allBlks.push(blkName);
             //Click Blk Button
             await blkBtn.click();
             //Wait for Units Table
@@ -53,9 +56,12 @@ async function puppet() {
             //console log scraping percentage
             console.log(`${(allUnits.length/6.45).toFixed(2)} %`);
         };
+        //last index used to store Blks array
+        allUnits.push(allBlks);
         console.log('Scrape Done');
         browser.close();
         return await allUnits;
+    }
 };
 
-module.exports.scrape = puppet();
+module.exports.scrape = puppet;

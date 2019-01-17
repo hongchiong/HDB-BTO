@@ -3,8 +3,13 @@ var DefaultLayout = require('./layouts/default');
 
 class Home extends React.Component {
   render() {
-    console.log("THIS IS HOME PAGE");
-    console.log(this.props[0]);
+
+    //Dynamic Generate Table To Display Result
+    //Need To Count Blks and Generate Blks Column Header
+    //Count Units and Generate Units Column Header
+    //Count Levels And Generate Level Rows
+    //
+
     const units = this.props[0].map((unit, i) => {
         return (
             <a href={`localhost:3000/${unit.id}`} class="list-group-item list-group-item-action flex-column align-items-start">
