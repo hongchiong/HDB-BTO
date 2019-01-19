@@ -29,82 +29,71 @@ const startScrape = () => {
         console.log(allUnits)
         console.log(allUnits.length);
         seedDatabase(allUnits);
-        require('./routes')(app, db);
+        // require('./routes')(app, db);
     });
 };
 
 const seedDatabase = (allUnits) => {
-    const startQueries = (seeded, allUnits, allBlks) => {
-        const queryBlock = (blkQuery, allUnits, allBlks) => {
-            for (let j = 0; j < allBlks.length; j++) {
-                blkValue = [allBlks[j]];
-                db.pool.query(blkQuery, blkValue, (err, result) => {
-                    if (err) {
-                        console.error('query error:', err.stack);
-                    } else {
-                        //Seed Units
-                        console.log(result.rows[0]);
-                        for (let k = 0; k < allUnits.length - 1; k++) {
-                            if (allUnits[k].blkName == result.rows[0].blk_num) {
-                                if (allUnits[k].unitColor == '#cc0000') {
-                                    let unitQuery = `INSERT INTO units (unit_num, blk_id, selected) VALUES ('${allUnits[k].unitNumber}', '${result.rows[0].id}', '${true}');`;
-                                    db.pool.query(unitQuery, (err, result) => {
-                                        if (err) {
-                                            console.error('query error', err.stack);
-                                        }
-                                    });
-                                } else {
-                                    let unitQuery = `INSERT INTO units (unit_num, blk_id, selected) VALUES ('${allUnits[k].unitNumber}', '${result.rows[0].id}', '${false}');`;
-                                    db.pool.query(unitQuery, (err, result) => {
-                                        if (err) {
-                                            console.error('query error', err.stack);
-                                        }
-                                    });
-                                }
+    //CHECK IF SEEDED
+    let seedQuery = `SELECT COUNT (unit) FROM units;`;
+    db.pool.query(seedQuery, (err, result) => {
+        if (err) {
+          console.error('query error:', err.stack);
+        } else {
+            if (result.rows[0].count == 645) {
+                //SEEDED PREVIOUSLY
+                for ( i in allUnits ) {
+                    if (allUnits[i].unitColor == '#cc0000') {
+                        let updateQuery = `UPDATE units SET selected = 't', updated_on = 'now()' WHERE unit = '${allUnits[i].unit}';`;
+                        db.pool.query(updateQuery, (err, result) => {
+                            if (err) {
+                                console.error('query error:', err.stack);
                             };
-                        };
-                    }
-                });
+                        });
+                    } else {
+                        let updateQuery = `UPDATE units SET selected = 'f', updated_on = 'now()' WHERE unit = '${allUnits[i].unit}';`;
+                        db.pool.query(updateQuery, (err, result) => {
+                            if (err) {
+                                console.error('query error:', err.stack);
+                            };
+                        });
+                    };
+                };
+            } else {
+                //NOT SEEDED
+                for ( i in allUnits ) {
+                    let insertQuery = `INSERT INTO units (unit, selected, blknum, level, unitnum) VALUES ($1, $2, $3, $4, $5);`;
+                    if (allUnits[i].unitColor == '#cc0000') {
+                        let unitsValues = [allUnits[i].unit, true, allUnits[i].blkNum, allUnits[i].lvl, allUnits[i].unitNumber];
+                        db.pool.query(insertQuery, unitsValues, (err, result) => {
+                            if (err) {
+                                console.error('query error:', err.stack);
+                            };
+                        });
+                    } else {
+                        let unitsValues = [allUnits[i].unit, false, allUnits[i].blkNum, allUnits[i].lvl, allUnits[i].unitNumber];
+                        db.pool.query(insertQuery, unitsValues, (err, result) => {
+                            if (err) {
+                                console.error('query error:', err.stack);
+                            };
+                        });
+                    };
+                };
             };
         };
-
-        //check which query to use
-        if (seeded) {
-            let blkQuery = `SELECT blks.id, blks.blk_num FROM blks;`;
-            queryBlock(blkQuery, allUnits, allBlks);
-        } else {
-            let blkQuery = `INSERT INTO blks (blk_num) VALUES ($1) RETURNING id, blk_num;`;
-            queryBlock(blkQuery, allUnits, allBlks);
-        }
-    };
-
-    const allBlks = allUnits[allUnits.length - 1];
-    //Need to make a check for whether Blks seeded already
-    let seeded = false;
-    for (let i = 0; i < allBlks.length; i++) {
-        let blkQuery = `SELECT blk_num FROM blks;`
-        db.pool.query(blkQuery, (err, result) => {
-            if (result.rows[0] == undefined) {
-                seeded = false;
-            } else if (allBlks[i] == result.rows[0].blk_num) {
-                seeded = true;
-            };
-        });
-    };
-    startQueries(seeded, allUnits, allBlks);
+    });
 };
 
 
-//To Check How Much Time Passed Since Last Update
-let query = "SELECT data_on FROM units ORDER BY id DESC";
-let latestUpdate;
+// To Check How Much Time Passed Since Last Update
+let query = "SELECT updated_on FROM units ORDER BY updated_on ASC";
 db.pool.query(query, (err, result) => {
     if (err) {
         console.error('query error:', err.stack);
     } else {
         //if 3 hrs has passed since latest update
         let now = new Date();
-        if (result.rows[0] == undefined || (now.getTime() - result.rows[0].data_on.getTime()) > 10800000) {
+        if (result.rows[0] == undefined || (now.getTime() - result.rows[0].updated_on.getTime()) > 10800000) {
             //Scrape and then scrape every hr
             startScrape();
             setInterval(startScrape, 3600000);
