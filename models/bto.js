@@ -32,6 +32,29 @@ module.exports = (dbPoolInstance) => {
                 }
                 unitsArr = rmDups(unitsArr).sort();
 
+
+                //Array of Blks and their Levels
+                let blkAndLevels = [];
+                for ( i in blksArr ) {
+                    let tempLvlArr = [];
+                    let blklvlquery = `SELECT level, blknum FROM units WHERE units.blknum = '${blksArr[i]}';`;
+                    dbPoolInstance.query(blklvlquery, (err,result) => {
+                        for ( i in result.rows ) {
+                            tempLvlArr.push(result.rows[i].level);
+                        };
+                        tempLvlArr = rmDups(tempLvlArr).sort();
+                        blkAndLevels[result.rows[i].blknum] = tempLvlArr;
+                    });
+                    console.log(blkAndLevels);
+                };
+
+
+
+
+
+
+
+
                 let returnResult = {
                     allBlkNums: blksArr,
                     allLevels: levelsArr,
