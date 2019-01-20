@@ -7,7 +7,8 @@ const rmDups = (arr) => arr.filter((v,i) => arr.indexOf(v) === i);
    * ===========================================
    */
 const index = (req, res) => {
-    db.bto.getAll((err, result) => {
+    db.bto.index((err, result) => {
+        // console.log(result['unitsForUnitnum']);
         res.render('home', {btoData: result});
     });
 };

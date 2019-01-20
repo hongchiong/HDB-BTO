@@ -16,4 +16,4 @@ CREATE TABLE IF NOT EXISTS users (
     email TEXT
 );
 
--- psql -d hdbbto -U postgres -f tables.sql
+-- psql -d hdbtest -U postgres -f tables.sql

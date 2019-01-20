@@ -4,7 +4,7 @@ const bto = require('./models/bto');
 const configs = {
   user: 'postgres',
   host: '127.0.0.1',
-  database: 'hdbbto',
+  database: 'hdbtest',
   port: 5432,
   password: 'pg'
 };
