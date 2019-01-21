@@ -7,8 +7,15 @@ const rmDups = (arr) => arr.filter((v,i) => arr.indexOf(v) === i);
    * ===========================================
    */
 const index = (req, res) => {
-    db.bto.index((err, result) => {
+    db.bto.blk('431B', (err, result) => {
         // console.log(result['unitsForUnitnum']);
+        res.render('home', {btoData: result});
+    });
+};
+
+const blk = (req, res) => {
+    db.bto.blk(req.params.blknum, (err, result) => {
+        // console.log(result);
         res.render('home', {btoData: result});
     });
 };
@@ -20,5 +27,6 @@ const index = (req, res) => {
    */
   return {
     index,
+    blk,
   };
 }
