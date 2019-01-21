@@ -123,7 +123,7 @@ module.exports = (dbPoolInstance) => {
         });
     }
 
-    let blk = async (blknum, callback) => {
+    let blk = async (loggedinCookie, nameCookie, blknum, callback) => {
         let query = "SELECT * FROM units";
         let returnResult = {};
         dbPoolInstance.query(query, (err, result) => {
@@ -194,7 +194,7 @@ module.exports = (dbPoolInstance) => {
                             unitsInBlkArr = rmDups(unitsInBlkArr).sort();
 
                             async.forEachOf(unitsInBlkArr, (dataEle2, i, inner_callback) => {
-                                let unitsQuery = `SELECT * FROM units WHERE unitnum = '${dataEle2}' ORDER BY id ASC;`
+                                let unitsQuery = `SELECT * FROM units WHERE unitnum = '${dataEle2}' ORDER BY level DESC;`
                                 dbPoolInstance.query(unitsQuery, (err, result) => {
                                     if (err) {
                                         console.error('query error', err.stack);
@@ -210,10 +210,11 @@ module.exports = (dbPoolInstance) => {
                                 let unitsInUnitnumInBlk = {};
                                 unitsInUnitnumInBlk[dataEle1] = unitsInUnitnum;
                                 returnResult['unitsInUnitnumInBlk'] = ([unitsInUnitnumInBlk]);
+                                returnResult['loggedinCookie'] = loggedinCookie;
+                                console.log(returnResult);
                                 callback(null, returnResult);
                                 // console.log(unitsInUnitnumInBlk[dataEle1][3][Object.keys(unitsInUnitnumInBlk[dataEle1][3])]);
                             });
-
                         }
                     });
                 }, (err) => {
@@ -223,10 +224,55 @@ module.exports = (dbPoolInstance) => {
         });
     };
 
+    let sign = (userForm, callback) => {
+        switch (userForm.func) {
+            case 'signin':
+                let query = `SELECT * FROM users WHERE username='${userForm.name}'`;
+                dbPoolInstance.query(query, (err, result) => {
+                    if (err) {
+                        console.error('query error:', err.stack);
+                        callback(err, null);
+                    } else {
+                        if ( result.rows.length === 0 ) {
+                            callback(null, null);
+                        } else {
+                            const user = result.rows[0];
+                            let password = user.password;
+                            if (password == sha256(userForm.password)) {
+                                callback(null, null, 'signin', userForm.name);
+                            } else {
+                                callback(null, null);
+                            }
+                        }
+                    }
+                });
+                break;
+
+            case 'signout':
+                callback(null, null, 'signout');
+                break;
+
+            case 'signup':
+                const values = [userForm.name, sha256(userForm.password), userForm.email];
+                let text = "INSERT INTO users (username, password, email) VALUES ($1, $2, $3)";
+
+                dbPoolInstance.query(text, values, (err, result) => {
+                    if (err) {
+                        console.error('query error:', err.stack);
+                        callback(err, null);
+                    } else {
+                        callback(null, null, 'signin', userForm.name);
+                    }
+                });
+                break;
+        }
+    };
+
 
 
     return {
         index,
-        blk
+        blk,
+        sign,
     };
 };

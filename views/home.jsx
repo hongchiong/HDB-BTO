@@ -34,7 +34,7 @@ class Home extends React.Component {
                             <h2>Blk: {Object.keys(blknum)}</h2>
                         </div>
                         <small>
-                            Updated On: {blknum[Object.keys(blknum)][0][Object.keys(blknum[Object.keys(blknum)][0])][0].updated_on.getDate()}-{blknum[Object.keys(blknum)][0][Object.keys(blknum[Object.keys(blknum)][0])][0].updated_on.getMonth()-1}-{blknum[Object.keys(blknum)][0][Object.keys(blknum[Object.keys(blknum)][0])][0].updated_on.getFullYear()}
+                            Updated On: {blknum[Object.keys(blknum)][0][Object.keys(blknum[Object.keys(blknum)][0])][0].updated_on.getDate()}{blknum[Object.keys(blknum)][0][Object.keys(blknum[Object.keys(blknum)][0])][0].updated_on.getMonth()-1}-{blknum[Object.keys(blknum)][0][Object.keys(blknum[Object.keys(blknum)][0])][0].updated_on.getFullYear()}, {blknum[Object.keys(blknum)][0][Object.keys(blknum[Object.keys(blknum)][0])][0].updated_on.getHours()}:{blknum[Object.keys(blknum)][0][Object.keys(blknum[Object.keys(blknum)][0])][0].updated_on.getMinutes()}
                         </small>
                     </div>
                 </div>
@@ -83,8 +83,31 @@ class Home extends React.Component {
             )
     });
 
+    const buttonsFalse = () => {
+        return (
+            <div class="justify-content-end">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="" data-toggle="modal" data-target="#signInModal">Sign In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="" data-toggle="modal" data-target="#signUpModal">Sign Up</a>
+                    </li>
+                </ul>
+            </div>
+            );
+    };
+    const buttonsTrue = () => {
+        return (
+            <form action="/users" method="POST">
+                <input type="hidden" name="func" value="signout"/>
+                <input type="submit" class="btn btn-danger" value="Sign Out"/>
+            </form>
+            );
+    };
+
     return (
-        <DefaultLayout>
+        <DefaultLayout buttons={(this.props.btoData.loggedinCookie == 'true') ? buttonsTrue : buttonsFalse}>
             <nav class="navbar sticky-top navbar-light bg-light justify-content-center">
                 <ul class="nav">
                     {blks}
@@ -99,44 +122,3 @@ class Home extends React.Component {
 }
 
 module.exports = Home;
-
-
-
-
-//GRID TEST CODE
-    // const grid = this.props.btoData.unitsForUnitnum.map( (unitnum, ind, arr) => {
-    //     return (
-    //         <div class="col-sm-1 blk-colmuns">
-    //             <div class="row blk-row">
-    //                 <div class="col-sm text-center border blk-header">
-    //                     {Object.keys(unitnum)}
-    //                 </div>
-    //             </div>
-    //             <div class="row blk-row">
-    //                 <div class="col-sm text-center border blk-header">
-    //                     {
-    //                         this.props.btoData.unitsForLevel.map( (levelnum, ind, arr) => {
-    //                             return (
-    //                                 <div class="col-sm text-center border unitheader">
-    //                                     {
-    //                                         levelnum[Object.keys(levelnum)].map( (unit, ind) => {
-    //                                             if (unit.unitnum == Object.keys(unitnum)) {
-    //                                                return (
-    //                                                     <div class="col-sm text-center border unitheader">
-    //                                                         {
-    //                                                             unit.unit
-    //                                                         }
-    //                                                     </div>
-    //                                                 )
-    //                                             }
-    //                                         })
-    //                                     }
-    //                                 </div>
-    //                             )
-    //                         })
-    //                     }
-    //                 </div>
-    //             </div>
-    //         </div>
-    //         )
-    // });

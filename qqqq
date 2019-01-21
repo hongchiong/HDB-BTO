@@ -1,0 +1,59 @@
+[33mcommit f863fac659c6359d7ef059ea03a155960a2c54d6[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: hongchiong <hongchiong@gmail.com>
+Date:   Mon Jan 21 22:20:26 2019 +0800
+
+    at least now it looks legit. but not ideal. shall stick to this for now
+
+[33mcommit 59f1968c7323d201fa21c6be7930161c47f7233f[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: hongchiong <hongchiong@gmail.com>
+Date:   Sun Jan 20 15:32:48 2019 +0800
+
+    need to stop working on grid for now
+
+[33mcommit 1d115fd9d647d03f31ac19e666d914beeb1b2a36[m
+Author: hongchiong <hongchiong@gmail.com>
+Date:   Sat Jan 19 18:11:43 2019 +0800
+
+    backup
+
+[33mcommit 756a0b542f655836caef1ce3ffacfc8fcde1b415[m
+Author: hongchiong <hongchiong@gmail.com>
+Date:   Sat Jan 19 17:13:53 2019 +0800
+
+    rebuild database. back to data display at jsx
+
+[33mcommit ee3baeeead80037c177c9fa649253d43d86e31b8[m
+Author: hongchiong <hongchiong@gmail.com>
+Date:   Thu Jan 17 19:25:57 2019 +0800
+
+    stuck at data presentation. might try rebuilding database
+
+[33mcommit a988fb6590c820952d8d2fc1c0b7dba3048bf4b3[m
+Author: hongchiong <hongchiong@gmail.com>
+Date:   Thu Jan 17 08:46:54 2019 +0800
+
+    minor fix
+
+[33mcommit 3b933d9e2e21ff2b9d87b9b101759d56496a962d[m
+Author: hongchiong <hongchiong@gmail.com>
+Date:   Thu Jan 17 01:48:38 2019 +0800
+
+    query correct data and pass to home jsx
+
+[33mcommit 975afbcec768f10314459c13186ec011a0e84d3d[m
+Author: hongchiong <hongchiong@gmail.com>
+Date:   Thu Jan 17 00:56:34 2019 +0800
+
+    setup periodic database update. send units data to root routes
+
+[33mcommit 43aea3c22c7051a943729240dbd4844ee3a3a273[m
+Author: hongchiong <hongchiong@gmail.com>
+Date:   Wed Jan 16 21:31:39 2019 +0800
+
+    finally seeded database
+
+[33mcommit e2959ecb5ed35097d5fa36e5639998f6137bff2d[m
+Author: hongchiong <hongchiong@gmail.com>
+Date:   Tue Jan 15 14:43:39 2019 +0800
+
+    first commit
