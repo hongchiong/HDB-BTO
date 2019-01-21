@@ -14,7 +14,7 @@ const index = (req, res) => {
 };
 
 const blk = (req, res) => {
-    db.bto.blk(req.params.blknum, (err, result) => {
+    db.bto.blk(req.cookies['loggedIn'], req.cookies['name'], req.params.blknum, (err, result) => {
         // console.log(result);
         res.render('home', {btoData: result});
     });
@@ -41,6 +41,13 @@ const sign = (req, res) => {
     });
 };
 
+const unit = (req, res) => {
+    db.bto.unit(req.cookies['name'], req.body, (err, result) => {
+        console.log(result);
+        res.redirect('/');
+    });
+};
+
   /**
    * ===========================================
    * Export controller functions as a module
@@ -50,5 +57,6 @@ const sign = (req, res) => {
     index,
     blk,
     sign,
+    unit,
   };
 }

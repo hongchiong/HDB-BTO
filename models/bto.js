@@ -211,14 +211,13 @@ module.exports = (dbPoolInstance) => {
                                 unitsInUnitnumInBlk[dataEle1] = unitsInUnitnum;
                                 returnResult['unitsInUnitnumInBlk'] = ([unitsInUnitnumInBlk]);
                                 returnResult['loggedinCookie'] = loggedinCookie;
-                                console.log(returnResult);
-                                callback(null, returnResult);
+                                inner_callback(null);
                                 // console.log(unitsInUnitnumInBlk[dataEle1][3][Object.keys(unitsInUnitnumInBlk[dataEle1][3])]);
                             });
                         }
                     });
                 }, (err) => {
-
+                    callback(null, returnResult);
                 });
             };
         });
@@ -268,11 +267,31 @@ module.exports = (dbPoolInstance) => {
         }
     };
 
-
+    let unit = (username, userForm, callback) => {
+        let userIdQuery = `SELECT id FROM users WHERE username ='${username}';`;
+        dbPoolInstance.query(userIdQuery, (err, result) => {
+            if (err) {
+                console.error('query error:', err.stack);
+                callback(err, null);
+            } else {
+                let values = [result.rows[0].id, parseInt(userForm.track)];
+                let userSelection = `INSERT INTO units_users (unit_id, user_id) VALUES ($1, $2) RETURNING unit_id, user_id`;
+                dbPoolInstance.query(userSelection, values, (err, result) => {
+                    if (err) {
+                        console.error('query error:', err.stack);
+                        callback(err, null);
+                    } else {
+                        callback(null, result.rows);
+                    }
+                });
+            }
+        });
+    };
 
     return {
         index,
         blk,
         sign,
+        unit,
     };
 };

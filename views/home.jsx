@@ -56,11 +56,23 @@ class Home extends React.Component {
                                                             </li>
                                                         )
                                                     } else {
-                                                        return (
-                                                            <li class="list-group-item">
-                                                              {units.unit}
-                                                            </li>
-                                                        )
+                                                        if (this.props.btoData.loggedinCookie == 'true') {
+                                                            return (
+                                                                <li class="list-group-item p-0">
+                                                                    <form action="/unit" method="POST">
+                                                                        <input type="hidden" name="track" value={units.id}/>
+                                                                        <input type="submit" class="btn btn-success m-0 w-100 h-100 rounded-0" value={units.unit}/>
+                                                                    </form>
+                                                                </li>
+                                                            )
+                                                        }
+                                                        else {
+                                                            return (
+                                                                <li class="list-group-item">
+                                                                    {units.unit}
+                                                                </li>
+                                                            )
+                                                        }
                                                     }
 
                                                 })

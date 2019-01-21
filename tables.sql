@@ -6,6 +6,11 @@ CREATE TABLE IF NOT EXISTS units (
     blknum TEXT,
     level TEXT,
     unitnum TEXT,
+);
+
+CREATE TABLE IF NOT EXISTS units_users (
+    id SERIAL PRIMARY KEY,
+    unit_id INTEGER,
     user_id INTEGER
 );
 

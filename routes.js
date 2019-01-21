@@ -4,4 +4,5 @@ module.exports = (app, db) => {
     app.get('/', bto.index);
     app.get('/:blknum', bto.blk);
     app.post('/users', bto.sign);
+    app.post('/unit', bto.unit)
 };
