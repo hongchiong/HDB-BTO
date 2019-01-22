@@ -1,5 +1,5 @@
 # HDB-BTO
-The project intends to display HDB BTO data in a more user-friendly presentation, and functionalities.
+The project intends to display HDB BTO data in a more user-friendly presentation, and more functionalities.
 
 Original Site: https://services2.hdb.gov.sg/webapp/BP13AWFlatAvail/BP13SEstateSummary?sel=BTO
 
