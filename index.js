@@ -29,7 +29,7 @@ const startScrape = () => {
         console.log(allUnits)
         console.log(allUnits.length);
         seedDatabase(allUnits);
-        // require('./routes')(app, db);
+        require('./routes')(app, db);
     });
 };
 
