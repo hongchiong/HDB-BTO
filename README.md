@@ -4,10 +4,10 @@ The project intends to display HDB BTO data in a more user-friendly presentation
 Original Site: https://services2.hdb.gov.sg/webapp/BP13AWFlatAvail/BP13SEstateSummary?sel=BTO
 
 ## Tech Used
-###### Puppeteer
+### Puppeteer
 As the HDB BTO data is not readily available as an API, I had to build a scraper to extract the necessary data from the website.
 
-###### async
+### async
 Used the async package to deal with nested database queries.
 
 ## Things to Work On
