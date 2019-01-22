@@ -51,30 +51,29 @@ class Home extends React.Component {
                                                 unitObj[Object.keys(unitObj)].map(units => {
                                                     if (units.selected) {
                                                          return (
-                                                            <li class="list-group-item" style={{backgroundColor: '#cc1100'}}>
+                                                            <li class="list-group-item text-white" style={{backgroundColor: '#aa1729'}}>
                                                               {units.unit}
                                                             </li>
                                                         )
                                                     } else {
                                                         if (this.props.btoData.loggedinCookie == 'true') {
                                                             return (
-                                                                <li class="list-group-item p-0">
+                                                                <li class="list-group-item p-0 text-white">
                                                                     <form action="/unit" method="POST">
                                                                         <input type="hidden" name="track" value={units.id}/>
-                                                                        <input type="submit" class="btn btn-success m-0 w-100 h-100 rounded-0" value={units.unit}/>
+                                                                        <input type="submit" class="btn m-0 w-100 h-100 rounded-0 text-white" style={{backgroundColor: '#5bad5e'}} value={units.unit}/>
                                                                     </form>
                                                                 </li>
                                                             )
                                                         }
                                                         else {
                                                             return (
-                                                                <li class="list-group-item">
+                                                                <li class="list-group-item text-white" style={{backgroundColor: '#5bad5e'}}>
                                                                     {units.unit}
                                                                 </li>
                                                             )
                                                         }
                                                     }
-
                                                 })
                                             }
                                     </ul>
