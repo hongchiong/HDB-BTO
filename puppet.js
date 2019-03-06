@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer');
 // //Web Scraper
 const puppet = async (start) => {
     if (start) {
-        const browser = await puppeteer.launch({headless: true});
+        const browser = await puppeteer.launch({headless: false});
         //GO TO URL
         let page = await browser.newPage();
         await page.goto('https://services2.hdb.gov.sg/webapp/BP13AWFlatAvail/BP13EBSFlatSearch?Town=Punggol&Flat_Type=BTO&DesType=A&ethnic=Y&Flat=4-Room&ViewOption=A&dteBallot=201808&projName=');
@@ -23,6 +23,12 @@ const puppet = async (start) => {
 
             let blkBtn = blks[i];
             let btn = await blkBtn.$('a');
+
+            let font = await blkBtn.$('font > font');
+            if (font) {
+                    btn = font;
+            }
+
             let blkNum = await page.evaluate(btn => btn.innerText, btn);
             //Click Blk Button
             await blkBtn.click();

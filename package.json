@@ -16,7 +16,6 @@
   "bugs": {
     "url": "https://github.com/hongchiong/HDB-BTO/issues"
   },
-
   "homepage": "https://github.com/hongchiong/HDB-BTO#readme",
   "dependencies": {
     "async": "^2.6.1",
